@@ -1,12 +1,8 @@
-- name: Ensure the HashiCorp Homebrew tap is present
-  community.general.homebrew_tap:
-    name: hashicorp/tap
-    state: present
+- name: Create Directories for Nomad
+  ansible.builtin.import_tasks: directories.yml
 
-- name: Ensure Consul and Nomad are installed from HashiCorp tap
-  community.general.homebrew:
-    name:
-      - hashicorp/tap/consul
-      - hashicorp/tap/nomad
-    state: latest
-    update_homebrew: true
+- name: Install / Upgrade Nomad and Consul
+  ansible.builtin.import_tasks: install.yml
+
+- name: Apply Nomad configuration templates
+  ansible.builtin.import_tasks: templating.yml

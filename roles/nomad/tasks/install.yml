@@ -1,0 +1,12 @@
+- name: Ensure the HashiCorp Homebrew tap is present
+  community.general.homebrew_tap:
+    name: hashicorp/tap
+    state: present
+
+- name: Ensure Consul and Nomad are installed from HashiCorp tap
+  community.general.homebrew:
+    name:
+      - hashicorp/tap/consul
+      - hashicorp/tap/nomad
+    state: latest
+    update_homebrew: true
