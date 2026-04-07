@@ -1,0 +1,5 @@
+- name: Apply Nomad role to cosmonautical hosts
+  hosts: cosmonautical
+  gather_facts: false
+  roles:
+    - ./roles/nomad
