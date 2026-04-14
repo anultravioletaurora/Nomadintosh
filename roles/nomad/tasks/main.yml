@@ -1,4 +1,5 @@
 - name: Create Directories for Nomad
+  become: true
   ansible.builtin.import_tasks: directories.yml
 
 - name: Install / Upgrade Nomad and Consul
@@ -6,3 +7,7 @@
 
 - name: Apply Nomad configuration templates
   ansible.builtin.import_tasks: templating.yml
+
+- name: Download task drivers and plugins
+  ansible.builtin.import_tasks: drivers.yml
+  when: podman | default(false)
