@@ -22,7 +22,7 @@
 
     - name: Include Docker Desktop role
       ansible.builtin.include_role:
-        name: ./roles/docker-desktop
+        name: ./roles/docker_desktop
       when: docker | default(false)
 
     - name: Include Podman role
@@ -43,10 +43,10 @@
 
       - name: Include GH Actions Role
         ansible.builtin.include_role:
-          name: ./roles/github-actions
+          name: ./roles/github_actions
         when: gh_actions | default(false)
 
-      - name: Include Mincraft Server Role
+      - name: Include Minecraft Server Role
         ansible.builtin.include_role:
           name: ./roles/minecraft
         when: minecraft | default(false)
