@@ -1,0 +1,45 @@
+job "minecraft" {
+  datacenters = ["{{ datacenter }}"]
+  type        = "service"
+
+  group "server" {
+    count = 1
+
+    network {      
+      port "minecraft-java" {
+        static = 25565
+      }
+      
+      port "rcon" {
+        static = 25575
+      }
+
+      port "minecraft-bedrock" {
+        static = 19132
+      }
+    }
+
+    service {
+      name = "minecraft-server-java"
+      port = "minecraft-java"
+    }
+
+    service {
+      name = "minecraft-server-bedrock"
+      port = "minecraft-bedrock"
+    }
+
+    task "minecraft" {
+      driver = "raw_exec"
+
+      config {
+        command = "{{ minecraft_server_executable }}"
+      }
+
+      resources {
+        cpu    = 6 # 6 Cores
+        memory = 6144 # 6GB Total
+      }
+    }
+  }
+}
