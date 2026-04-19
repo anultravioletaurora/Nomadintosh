@@ -25,6 +25,14 @@ server {
 client {
   enabled = true
 
+  {% if volumes is defined and volumes | length > 0 %}
+  {% for volume in volumes %}
+  host_volume "{{ volume.name }}" {
+    path = "{{ volume.path }}"
+  }
+  {% endfor %}
+  {% endif %}
+
   # Tagging helps constrain jobs later
   node_class = "worker"
 }
@@ -37,6 +45,22 @@ plugin "raw_exec" {
 plugin "nomad-driver-podman" {
   config {
     socket_path = "{{ podman_socket_path }}"
+  }
+}
+{% endif %}
+
+{% if docker | default(false) %}
+plugin "docker" {
+  config {
+    endpoint = "unix:///var/run/docker.sock"
+    allow_privileged = false
+    gc {
+      image = true
+      container = true
+    }
+    volumes {
+      enabled = true
+    }
   }
 }
 {% endif %}

@@ -3,6 +3,16 @@
   # Need to fetch IPv4 addresses for Consul's configuration
   gather_facts: true 
   tasks:
+    - name: Ensure host is running macOS
+      ansible.builtin.assert:
+        that: ansible_facts['os_family'] == 'Darwin'
+        fail_msg: "This playbook is intended to run on macOS hosts only."
+
+    - name: Include Docker Desktop role
+      ansible.builtin.include_role:
+        name: ./roles/docker-desktop
+      when: docker | default(false)
+
     - name: Include Podman role
       ansible.builtin.include_role:
         name: ./roles/podman
