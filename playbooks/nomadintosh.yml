@@ -1,5 +1,5 @@
 - name: Apply Nomad role to cosmonautical hosts
-  hosts: all
+  hosts: jellify
   # Need to fetch IPv4 addresses for Consul's configuration
   gather_facts: true 
   tasks:
@@ -7,6 +7,10 @@
       ansible.builtin.include_role:
         name: ./roles/podman
       when: podman | default(false)
+
+    - name: Include Consul role
+      ansible.builtin.include_role:
+        name: ./roles/consul
 
     - name: Include Nomad role
       ansible.builtin.include_role:

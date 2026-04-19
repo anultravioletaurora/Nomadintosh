@@ -1,7 +1,5 @@
-consul_config_dir: "{{ config_dir }}/consul.d"
 nomad_config_dir: "{{ config_dir }}/nomad.d"
 
-consul_working_dir: "{{ working_dir }}/consul"
 nomad_working_dir: "{{ working_dir }}/nomad"
 
 podman_driver_version: "0.6.4"

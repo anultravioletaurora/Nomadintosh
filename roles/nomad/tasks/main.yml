@@ -2,20 +2,20 @@
   become: true
   ansible.builtin.import_tasks: directories.yml
 
-- name: Install / Upgrade Nomad and Consul
+- name: Install / Upgrade Nomad
   ansible.builtin.import_tasks: install.yml
 
 - name: Download task drivers and plugins
   ansible.builtin.import_tasks: drivers.yml
   when: podman | default(false)
 
-- name: Apply Nomad + Consul configuration templates
+- name: Apply Nomad configuration templates
   become: true
   ansible.builtin.import_tasks: configuration.yml
 
 - name: Apply LaunchAgents configuration
-  ansible.builtin.import_tasks: launchagents.yml
+  ansible.builtin.import_tasks: launchagent.yml
 
-- name: Kickstart Nomad and Consul services
-  ansible.builtin.import_tasks: services.yml
-  when: hashicorp_package_updated | default(false)
+- name: Kickstart Nomad services
+  ansible.builtin.import_tasks: start.yml
+  when: nomad_package_updated | default(false)

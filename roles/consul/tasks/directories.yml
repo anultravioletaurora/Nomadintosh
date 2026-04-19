@@ -1,12 +1,12 @@
-- name: Create Nomad Config Directory (as root)
+- name: Create Consul Config Directory (as root)
   ansible.builtin.file:
-    path: "{{ nomad_config_dir }}"
+    path: "{{ consul_config_dir }}"
     state: directory
     mode: '0755'
 
-- name: Create Nomad Working Directory (as user)
+- name: Create Consul Working Directory (as user)
   ansible.builtin.file:
-    path: "{{ nomad_working_dir }}"
+    path: "{{ consul_working_dir }}"
     owner: "{{ ansible_user }}"
     group: "staff"
     state: directory

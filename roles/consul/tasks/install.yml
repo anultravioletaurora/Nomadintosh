@@ -3,14 +3,14 @@
     name: hashicorp/tap
     state: present
 
-- name: Ensure Nomad is installed from HashiCorp tap
+- name: Ensure Consul is installed from HashiCorp tap
   community.general.homebrew:
     name:
-      - hashicorp/tap/nomad
+      - hashicorp/tap/consul
     state: latest
     update_homebrew: true
-  register: nomad_package_install
+  register: consul_package_install
 
-- name: Register if Nomad was installed or updated
+- name: Register if Consul was installed or updated
   ansible.builtin.set_fact:
-    nomad_package_updated: "{{ nomad_package_install.changed }}"
+    consul_package_updated: "{{ consul_package_install.changed }}"

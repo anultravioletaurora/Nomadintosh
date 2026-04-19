@@ -1,0 +1,17 @@
+- name: Create Directories for Consul
+  become: true
+  ansible.builtin.import_tasks: directories.yml
+
+- name: Install / Upgrade Consul
+  ansible.builtin.import_tasks: install.yml
+
+- name: Apply Consul configuration templates
+  become: true
+  ansible.builtin.import_tasks: configuration.yml
+
+- name: Apply LaunchAgents configuration
+  ansible.builtin.import_tasks: launchagent.yml
+
+- name: Kickstart Consul services
+  ansible.builtin.import_tasks: start.yml
+  when: consul_package_updated | default(false)
