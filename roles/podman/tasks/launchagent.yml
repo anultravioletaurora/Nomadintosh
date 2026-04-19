@@ -6,15 +6,10 @@
     owner: "{{ ansible_user }}"
     group: staff
 
-- name: Register Ansible User ID
-  ansible.builtin.command: id -u {{ ansible_user }}
-  register: ansible_user_id
-  changed_when: false
-
 - name: Load Podman Launch Agent
-  ansible.builtin.command: 
-    argv: 
+  ansible.builtin.command:
+    argv:
       - launchctl
       - bootstrap
-      - gui/{{ ansible_user_id.stdout }}
+      - gui/{{ ansible_user_id }}
       - /Users/{{ ansible_user }}/Library/LaunchAgents/com.podman.machine.default.plist

@@ -7,7 +7,7 @@
 
 - name: Create tmp directory for Podman driver plugin
   ansible.builtin.file:
-    path: "/tmp/{{ podman_driver_name }}"
+    path: "/tmp/{{ nomad_podman_driver_name }}"
     state: directory
 
 - name: Create plugins directory for Nomad
@@ -20,20 +20,20 @@
 
 - name: Download the Podman task driver plugin
   ansible.builtin.unarchive:
-    src: "https://github.com/hashicorp/nomad-driver-podman/archive/refs/tags/v{{ podman_driver_version }}.zip"
-    dest: "/tmp/{{ podman_driver_name }}"
+    src: "https://github.com/hashicorp/nomad-driver-podman/archive/refs/tags/v{{ nomad_podman_driver_version }}.zip"
+    dest: "/tmp/{{ nomad_podman_driver_name }}"
     remote_src: true
 
 - name: Compile the Podman driver plugin
-  ansible.builtin.command: "/opt/homebrew/bin/go build -o {{ podman_driver_name }}"
+  ansible.builtin.command: "/opt/homebrew/bin/go build -o {{ nomad_podman_driver_name }}"
   args:
-    chdir: "/tmp/{{ podman_driver_name }}/{{ podman_driver_name }}-{{ podman_driver_version }}"
-    creates: "/tmp/{{ podman_driver_name }}/{{ podman_driver_name }}-{{ podman_driver_version }}/{{ podman_driver_name }}"
+    chdir: "/tmp/{{ nomad_podman_driver_name }}/{{ nomad_podman_driver_name }}-{{ nomad_podman_driver_version }}"
+    creates: "/tmp/{{ nomad_podman_driver_name }}/{{ nomad_podman_driver_name }}-{{ nomad_podman_driver_version }}/{{ nomad_podman_driver_name }}"
 
 - name: Move the Podman driver plugin to the Nomad plugins directory
   ansible.builtin.copy:
-    src: "/tmp/{{ podman_driver_name }}/{{ podman_driver_name }}-{{ podman_driver_version }}/{{ podman_driver_name }}"
-    dest: "/opt/nomad/plugins/{{ podman_driver_name }}"
+    src: "/tmp/{{ nomad_podman_driver_name }}/{{ nomad_podman_driver_name }}-{{ nomad_podman_driver_version }}/{{ nomad_podman_driver_name }}"
+    dest: "/opt/nomad/plugins/{{ nomad_podman_driver_name }}"
     remote_src: true
     mode: '0755'
     owner: "{{ ansible_user }}"

@@ -1,5 +1,5 @@
-job_name: "minecraft-server"
+minecraft_job_name: "minecraft-server"
 
-job_file_dest: "{{ nomad_jobs_dir }}/minecraft-server.nomad.hcl"
+minecraft_job_file_dest: "{{ nomad_jobs_dir }}/minecraft-server.nomad.hcl"
 
 minecraft_server_executable: "{{ homebrew_dir }}/bin/minecraft-server"

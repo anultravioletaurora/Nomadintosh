@@ -1,4 +1,4 @@
-- name: Template Nomad server configuration 
+- name: Template Nomad server configuration
   ansible.builtin.template:
     src: templates/nomad.d/server.hcl.j2
     dest: "{{ nomad_config_dir }}/server.hcl"

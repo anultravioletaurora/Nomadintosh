@@ -8,22 +8,22 @@
 
 - name: Start Consul (if not already running)
   block:
-  - name: Check if Consul is already running
-    ansible.builtin.command: 
-      argv: 
-        - launchctl
-        - list
-        - homebrew.mxcl.consul
-    register: consul_launchctl
-    failed_when: false
-    changed_when: false
+    - name: Check if Consul is already running
+      ansible.builtin.command:
+        argv:
+          - launchctl
+          - list
+          - homebrew.mxcl.consul
+      register: consul_launchctl
+      failed_when: false
+      changed_when: false
 
-  - name: Load Consul Launch Agent
-    when: consul_launchctl.rc != 0
-    ansible.builtin.command:
-      argv:
-        - launchctl
-        - bootstrap
-        - gui/{{ ansible_user_id }}
-        - /Users/{{ ansible_user }}/Library/LaunchAgents/homebrew.mxcl.consul.plist
-    changed_when: true
+    - name: Load Consul Launch Agent
+      when: consul_launchctl.rc != 0
+      ansible.builtin.command:
+        argv:
+          - launchctl
+          - bootstrap
+          - gui/{{ ansible_user_id }}
+          - /Users/{{ ansible_user }}/Library/LaunchAgents/homebrew.mxcl.consul.plist
+      changed_when: true

@@ -1,4 +1,4 @@
-job "{{ job_name }}" {
+job "{{ github_actions_job_name }}" {
   datacenters = ["{{ datacenter }}"]
   type        = "service"
 
@@ -9,7 +9,7 @@ job "{{ job_name }}" {
       driver = "raw_exec"
 
       config {
-        command = "{{ gh_actions_executable }}"
+        command = "{{ github_actions_executable }}"
       }
 
       resources {

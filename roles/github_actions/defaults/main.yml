@@ -1,5 +1,5 @@
-job_name: "actions-runner"
+github_actions_job_name: "actions-runner"
 
-job_file_dest: "{{ nomad_jobs_dir }}/{{ job_name }}.nomad.hcl"
+github_actions_job_file_dest: "{{ nomad_jobs_dir }}/{{ github_actions_job_name }}.nomad.hcl"
 
-gh_actions_executable: /opt/github-actions/run.sh
+github_actions_executable: /opt/github-actions/run.sh
