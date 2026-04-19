@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: HashiCorp Nomad docs
+    url: https://developer.hashicorp.com/nomad/docs
+    about: Official Nomad documentation
+  - name: HashiCorp Consul docs
+    url: https://developer.hashicorp.com/consul/docs
+    about: Official Consul documentation

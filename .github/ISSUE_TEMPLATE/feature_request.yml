@@ -1,0 +1,58 @@
+name: Feature Request
+description: Suggest a new role, task, or improvement
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea to improve Nomadintosh? Describe it below.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the project does this relate to?
+      multiple: true
+      options:
+        - New role
+        - consul role
+        - nomad role
+        - podman role
+        - docker_desktop role
+        - github_actions role
+        - minecraft role
+        - software_update role
+        - Inventory / host variables
+        - Documentation
+        - CI / tooling
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: A concise description of what you're proposing.
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why would this be useful? What problem does it solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Have you tried any workarounds or alternative approaches?
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Links, references, or anything else that might be helpful.
