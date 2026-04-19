@@ -1,0 +1,31 @@
+all:
+  vars:
+    # SSH connection settings — applied to every host
+    ansible_user: youruser
+
+    # Extra Homebrew packages to install on every host (optional)
+    additional_homebrew_packages: []
+    #   - fastfetch
+
+# Each top-level group name becomes the Consul/Nomad datacenter for its hosts.
+# Hosts with `server: true` form the control plane; all others are client nodes.
+# See inventory/README.md for the full variable reference.
+
+your-datacenter:
+  hosts:
+    server1.example.com:
+      server: true
+    server2.example.com:
+      server: true
+    server3.example.com:
+      server: true
+
+    client1.example.com:
+      podman: true
+
+    client2.example.com:
+      docker: true
+      gh_actions: true
+
+    client3.example.com:
+      minecraft: true
