@@ -1,0 +1,21 @@
+job "{{ job_name }}" {
+  datacenters = ["{{ datacenter }}"]
+  type        = "service"
+
+  group "actions-runner" {
+    count = 1
+
+    task "actions-runner" {
+      driver = "raw_exec"
+
+      config {
+        command = "{{ gh_actions_executable }}"
+      }
+
+      resources {
+        cpu    = 20
+        memory = 10240
+      }
+    }
+  }
+}

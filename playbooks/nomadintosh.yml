@@ -2,12 +2,16 @@
   hosts: all
   # Need to fetch IPv4 addresses for Consul's configuration
   gather_facts: true 
-  tasks:
+  pre_tasks:
     - name: Ensure host is running macOS
       ansible.builtin.assert:
         that: ansible_facts['os_family'] == 'Darwin'
         fail_msg: "This playbook is intended to run on macOS hosts only."
 
+    - name: Set additional facts
+      ansible.builtin.include_role:
+        name: ./roles/set_facts
+  tasks:
     - name: Install Homebrew
       ansible.builtin.include_role:
         name: geerlingguy.mac.homebrew
@@ -33,3 +37,18 @@
     - name: Include Nomad role
       ansible.builtin.include_role:
         name: ./roles/nomad
+
+    - name: Deploy Nomad Jobs
+      block:
+
+      - name: Include GH Actions Role
+        ansible.builtin.include_role:
+          name: ./roles/github-actions
+        when: gh_actions | default(false)
+
+      - name: Include Mincraft Server Role
+        ansible.builtin.include_role:
+          name: ./roles/minecraft
+        when: minecraft | default(false)
+
+        

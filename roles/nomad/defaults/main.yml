@@ -1,6 +1,4 @@
-nomad_config_dir: "{{ config_dir }}/nomad.d"
-
-nomad_working_dir: "{{ working_dir }}/nomad"
+plugin_dir: "{{ nomad_working_dir }}/plugins"
 
 podman_driver_version: "0.6.4"
 podman_driver_name: "nomad-driver-podman"

@@ -1,0 +1,13 @@
+- name: Template and Deploy GitHub Actions Runner Nomad Job
+  ansible.builtin.template:
+    src: github-actions-runner.nomad.hcl.j2
+    dest: "{{ job_file_dest }}"
+    mode: '0644'
+
+- name: Register GitHub Actions Runner Nomad Job
+  ansible.builtin.command: 
+    argv:
+      - "{{ homebrew_dir }}/bin/nomad"
+      - job
+      - run
+      - "{{ job_file_dest }}"
