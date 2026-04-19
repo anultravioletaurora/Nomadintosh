@@ -2,7 +2,24 @@
 
 <img src="logo.png" alt="Nomadintosh Logo" width="200" height="225"  />
 
-An Ansible playbook for installing and configuring Nomad + Consul on a macOS cluster.
+An Ansible playbook for deploying [Nomad](https://developer.hashicorp.com/nomad/docs) + [Consul](https://developer.hashicorp.com/consul/docs) on a macOS cluster.
+
+**[Nomad](https://developer.hashicorp.com/nomad/docs)** is a workload orchestrator by HashiCorp. It schedules and runs containerised and bare-metal applications across a cluster of machines, similar in spirit to Kubernetes but can run natively on macOS.
+
+**[Consul](https://developer.hashicorp.com/consul/docs)** is a service mesh and service discovery tool, also by HashiCorp. It provides a distributed key-value store, health checking, and DNS-based service discovery. Nomad integrates with Consul natively to handle cluster membership and service registration.
+
+<details>
+<summary><strong>Why I built this</strong></summary>
+
+I wanted a job orchestrator to keep my homelab workloads organised, but Kubernetes doesn't run natively on macOS or Apple Silicon — it requires a Linux VM intermediary, which adds overhead and complexity.
+
+My previous homelab was a 3-node [Rancher Harvester](https://harvesterhci.io/) cluster. I wanted to experiment with Apple Silicon to evaluate performance-per-watt as an alternative, and Nomad was the natural fit: it runs as a native macOS binary, supports scheduling workloads directly on the host without a container runtime, and is significantly simpler to operate than Kubernetes at homelab scale.
+
+A bonus of running bare-metal jobs is easy access to full hardware acceleration — no passthrough configuration needed.
+
+Longer term, Nomad's multi-platform support means I can add Linux or Windows agents to the same cluster if needed — for example, running [Exact Audio Copy](https://www.exactaudiocopy.de/) on a Windows node for lossless CD ripping.
+
+</details>
 
 ## Requirements
 
@@ -14,7 +31,7 @@ An Ansible playbook for installing and configuring Nomad + Consul on a macOS clu
 
 ## Inventory
 
-Hosts are organised into named groups; the group name becomes the Consul/Nomad **datacenter** for every host in that group. See [inventory/README.md](inventory/README.md) for full instructions on how to populate `inventory/hosts.yml`.
+Hosts are organised into named groups; the group name becomes the Consul/Nomad [**datacenter**](https://developer.hashicorp.com/consul/docs/reference/agent/configuration-file/general#datacenter) for every host in that group. See [inventory/README.md](inventory/README.md) for full instructions on how to populate `inventory/hosts.yml`.
 
 **Host variables:**
 
@@ -57,12 +74,13 @@ ansible-playbook -i inventory/hosts.yml playbooks/nomadintosh.yml --limit <hostn
 For every host, the playbook performs the following steps:
 
 1. **Facts** — asserts the host is running macOS and gathers additional inventory-derived facts (datacenter, `retry_join` peer list).
-2. **Homebrew** — Installs Homebrew, taps `hashicorp/tap` and installs any packages listed in `additional_homebrew_packages`.
-3. **Docker Desktop** _(hosts with `docker: true`)_ — installs and configures Docker Desktop.
-4. **Podman** _(hosts with `podman: true`)_ — installs Podman, initialises the machine, and installs the [`nomad-driver-podman`](https://developer.hashicorp.com/nomad/plugins/drivers/podman) plugin.
-5. **Consul** — creates config/data directories, installs Consul via Homebrew, templates `server.hcl` with datacenter, node name, server/client mode, and `retry_join` derived from inventory, and registers a LaunchAgent.
-6. **Nomad** — creates config/data directories, installs Nomad via Homebrew, templates `server.hcl`, and registers a LaunchAgent.
-7. **Nomad Jobs**:
+2. **Software Update** — downloads all pending macOS system updates via `softwareupdate`, installs any available Command Line Tools for Xcode, and warns if a restart is required.
+3. **Homebrew** — Installs Homebrew, taps `hashicorp/tap` and installs any packages listed in `additional_homebrew_packages`.
+4. **Docker Desktop** _(hosts with `docker: true`)_ — installs and configures Docker Desktop.
+5. **Podman** _(hosts with `podman: true`)_ — installs Podman, initialises the machine, and installs the [`nomad-driver-podman`](https://developer.hashicorp.com/nomad/plugins/drivers/podman) plugin.
+6. **Consul** — creates config/data directories, installs Consul via Homebrew, templates [`server.hcl`](https://developer.hashicorp.com/consul/docs/reference/agent/configuration-file) with datacenter, node name, server/client mode, and [`retry_join`](https://developer.hashicorp.com/consul/docs/reference/agent/configuration-file/general#retry_join) derived from inventory, and registers a LaunchAgent.
+7. **Nomad** — creates config/data directories, installs Nomad via Homebrew, templates [`server.hcl`](https://developer.hashicorp.com/nomad/docs/configuration) (including [`bootstrap_expect`](https://developer.hashicorp.com/nomad/docs/configuration/server#bootstrap_expect) and [`retry_join`](https://developer.hashicorp.com/nomad/docs/configuration/server_join)), and registers a LaunchAgent.
+8. **Nomad Jobs**:
    - **GitHub Actions runner** _(hosts with `gh_actions: true`)_ — templates and deploys a Nomad job for a self-hosted Actions runner.
    - **Minecraft server** _(hosts with `minecraft: true`)_ — templates and deploys a Nomad job for a Minecraft server.
 

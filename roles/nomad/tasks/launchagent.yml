@@ -5,3 +5,25 @@
     mode: '0644'
     owner: "{{ ansible_user }}"
     group: staff
+
+- name: Start Nomad (if not already running)
+  block:
+  - name: Check if Nomad is already running
+    ansible.builtin.command: 
+      argv: 
+        - launchctl
+        - list
+        - homebrew.mxcl.nomad
+    register: nomad_launchctl
+    failed_when: false
+    changed_when: false
+
+  - name: Load Nomad Launch Agent
+    when: nomad_launchctl.rc != 0
+    ansible.builtin.command:
+      argv:
+        - launchctl
+        - bootstrap
+        - gui/{{ ansible_user_id }}
+        - /Users/{{ ansible_user }}/Library/LaunchAgents/homebrew.mxcl.nomad.plist
+    changed_when: true
