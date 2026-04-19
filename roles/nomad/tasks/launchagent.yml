@@ -5,22 +5,3 @@
     mode: '0644'
     owner: "{{ ansible_user }}"
     group: staff
-
-- name: Create Launch Agent for Consul
-  ansible.builtin.template:
-    src: LaunchAgents/homebrew.mxcl.consul.plist.j2
-    dest: "/Users/{{ ansible_user }}/Library/LaunchAgents/homebrew.mxcl.consul.plist"
-    mode: '0644'
-    owner: "{{ ansible_user }}"
-    group: staff
-
-- name: Load Consul Launch Agent
-  when: false
-  ansible.builtin.command: 
-    argv: 
-      - launchctl
-      - load
-      - -w
-      - /Users/{{ ansible_user }}/Library/LaunchAgents/homebrew.mxcl.consul.plist
-  args:
-    creates: "/Users/{{ ansible_user }}/Library/LaunchAgents/homebrew.mxcl.consul.plist.loaded"
