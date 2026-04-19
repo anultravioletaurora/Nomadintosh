@@ -28,20 +28,28 @@ Hosts are organised into named groups; the group name becomes the Consul/Nomad *
 
 ## Running the playbook
 
+Run a full deployment:
+
 ```bash
-ansible-playbook playbooks/nomadintosh.yml -i inventory/hosts.yml
+./deploy.zsh
 ```
 
-Pass `--diff` to preview config file changes before they are applied:
+Dry-run in check + diff mode to preview changes without applying them:
 
 ```bash
-ansible-playbook playbooks/nomadintosh.yml -i inventory/hosts.yml --diff
+./check.zsh
 ```
 
-Limit execution to a single host or group:
+Serial Reboot all hosts in the inventory:
 
 ```bash
-ansible-playbook playbooks/nomadintosh.yml -i inventory/hosts.yml --limit <hostname>
+./reboot.zsh
+```
+
+To limit execution to a single host or group, you can also pass `--limit` directly to the underlying playbook:
+
+```bash
+ansible-playbook -i inventory/hosts.yml playbooks/nomadintosh.yml --limit <hostname>
 ```
 
 ## What it does
