@@ -1,0 +1,19 @@
+- name: Register Ansible User ID
+  ansible.builtin.command: id -u {{ ansible_user }}
+  register: ansible_user_id
+
+- name: Kickstart Consul Launch Agent
+  ansible.builtin.command:
+    argv:
+      - launchctl
+      - kickstart
+      - gui/{{ ansible_user_id.stdout }}
+      - /Users/{{ ansible_user }}/Library/LaunchAgents/homebrew.mxcl.consul.plist
+
+- name: Kickstart Nomad Launch Agent
+  ansible.builtin.command:
+    argv:
+      - launchctl
+      - kickstart
+      - gui/{{ ansible_user_id.stdout }}
+      - /Users/{{ ansible_user }}/Library/LaunchAgents/homebrew.mxcl.nomad

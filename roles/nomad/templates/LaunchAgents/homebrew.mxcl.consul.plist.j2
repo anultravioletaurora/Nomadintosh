@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>Label</key>
+        <string>homebrew.mxcl.consul</string>
+        <key>ProgramArguments</key>
+        <array>
+                <string>/opt/homebrew/opt/consul/bin/consul</string>
+                <string>agent</string>
+                <string>-config-file=/etc/consul.d/server.hcl</string>
+        </array>
+        <key>KeepAlive</key>
+        <dict>
+            <key>SuccessfulExit</key>
+            <false/>
+            <key>NetworkState</key>
+            <true/>
+        </dict>
+        <key>RunAtLoad</key>
+        <true/>
+        <key>StandardErrorPath</key>
+        <string>{{ log_dir }}/consul.log</string>
+        <key>StandardOutPath</key>
+        <string>{{ log_dir }}/consul.log</string>
+        <key>WorkingDirectory</key>
+        <string>{{ homebrew_dir }}/var</string>
+    </dict>
+</plist>

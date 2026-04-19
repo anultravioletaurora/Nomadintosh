@@ -1,0 +1,9 @@
+- name: Create Podman Machine
+  ansible.builtin.command: podman machine init
+  args:
+    creates: /Users/{{ ansible_user }}/.config/containers/podman/machine/qemu/podman-machine-default.qcow2
+
+- name: Start Podman Machine
+  ansible.builtin.command: podman machine start
+  register: podman_machine_start
+  changed_when: "'Started' in podman_machine_start.stdout"

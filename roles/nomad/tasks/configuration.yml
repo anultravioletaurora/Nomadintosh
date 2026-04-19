@@ -1,0 +1,15 @@
+- name: Template Nomad server configuration 
+  ansible.builtin.template:
+    src: templates/nomad.d/server.hcl.j2
+    dest: "{{ nomad_config_dir }}/server.hcl"
+    mode: '0644'
+    owner: root
+    group: wheel
+
+- name: Template Consul server configuration
+  ansible.builtin.template:
+    src: templates/consul.d/server.hcl.j2
+    dest: "{{ consul_config_dir }}/server.hcl"
+    mode: '0644'
+    owner: root
+    group: wheel

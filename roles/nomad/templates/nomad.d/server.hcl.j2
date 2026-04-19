@@ -1,0 +1,53 @@
+{# Derive datacenter from this host's inventory group #}
+{% set datacenter = group_names | reject('equalto', 'all') | reject('equalto', 'ungrouped') | first %}
+{# Collect all Nomad server hostnames from inventory #}
+{% set ns = namespace(servers=[]) %}
+{% for host in groups['all'] %}
+{%   if hostvars[host]['server'] | default(false) %}
+{%     set ns.servers = ns.servers + [host] %}
+{%   endif %}
+{% endfor %}
+datacenter = "{{ datacenter }}"
+data_dir   = "{{ nomad_working_dir }}"
+bind_addr  = "0.0.0.0"
+
+retry_join = ["{{ ns.servers | join('", "') }}"]
+
+# Control plane on this box
+server {
+  enabled = {{ server | default(false) | lower }}
+{% if server | default(false) %}
+  bootstrap_expect = {{ ns.servers | length }}
+{% endif %}
+}
+
+# Also schedule workloads here
+client {
+  enabled = true
+
+  # Tagging helps constrain jobs later
+  node_class = "worker"
+}
+
+plugin "raw_exec" {
+  config { enabled = true } 
+}
+
+{% if podman | default(false) %}
+plugin "nomad-driver-podman" {
+  config {
+    socket_path = "{{ podman_socket_path }}"
+  }
+}
+{% endif %}
+
+# Service discovery
+consul {
+  address = "127.0.0.1:8500"
+}
+
+# Optional but handy for debugging
+telemetry {
+  publish_allocation_metrics = true
+  publish_node_metrics       = true
+}

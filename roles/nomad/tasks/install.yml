@@ -10,3 +10,8 @@
       - hashicorp/tap/nomad
     state: latest
     update_homebrew: true
+  register: hashicorp_package_install
+
+- name: Register if Nomad or Consul were installed or updated
+  ansible.builtin.set_fact:
+    hashicorp_package_updated: "{{ hashicorp_package_install.changed }}"

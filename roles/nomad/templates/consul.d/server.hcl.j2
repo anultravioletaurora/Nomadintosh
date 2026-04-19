@@ -1,0 +1,25 @@
+{# Resolve the datacenter name and server node list from inventory #}
+{% set ns = namespace(dc=none, servers=[]) %}
+{% for host in groups['all'] %}
+{%   if hostvars[host]['server'] | default(false) %}
+{%     set ns.servers = ns.servers + [host] %}
+{%     if ns.dc is none %}
+{%       set ns.dc = hostvars[host]['group_names'] | reject('equalto', 'all') | reject('equalto', 'ungrouped') | first %}
+{%     endif %}
+{%   endif %}
+{% endfor %}
+datacenter = "{{ ns.dc }}"
+node_name  = "{{ inventory_hostname_short }}"
+data_dir   = "{{ consul_working_dir }}"
+
+server = {{ server | default(false) | lower }}
+{% if server | default(false) %}
+bootstrap_expect = {{ ns.servers | length }}
+{% endif %}
+ui = {{ server | default(false) | lower }}
+
+bind_addr      = "0.0.0.0"
+client_addr    = "0.0.0.0"
+advertise_addr = "{{ ansible_facts['default_ipv4']['address'] }}"
+
+retry_join = ["{{ ns.servers | join('", "') }}"]

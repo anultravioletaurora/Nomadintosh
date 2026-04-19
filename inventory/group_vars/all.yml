@@ -1,0 +1,7 @@
+homebrew_dir: /opt/homebrew
+
+config_dir: /etc
+
+working_dir: /opt
+
+log_dir: "{{ homebrew_dir }}/var/log"
