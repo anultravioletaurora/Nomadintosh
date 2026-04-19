@@ -1,8 +1,3 @@
-- name: Ensure the HashiCorp Homebrew tap is present
-  community.general.homebrew_tap:
-    name: hashicorp/tap
-    state: present
-
 - name: Ensure Consul is installed from HashiCorp tap
   community.general.homebrew:
     name:

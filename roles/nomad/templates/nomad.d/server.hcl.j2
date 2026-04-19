@@ -27,6 +27,8 @@ server {
 client {
   enabled = true
 
+  preferred_address_family = "ipv4"
+
   {% if volumes is defined and volumes | length > 0 %}
   {% for volume in volumes %}
   host_volume "{{ volume.name }}" {
