@@ -1,0 +1,12 @@
+---
+profile: moderate
+
+skip_list:
+  # state: latest is intentional — this tool is designed to keep homelab
+  # nodes up to date on every run.
+  - package-latest
+
+warn_list:
+  # softwareupdate --download has no reliable stdout to detect changes;
+  # these tasks should be audited and have changed_when added where possible.
+  - no-changed-when
