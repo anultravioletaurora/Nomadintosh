@@ -1,0 +1,32 @@
+- name: Download all System Updates
+  become: true
+  ansible.builtin.command:
+    argv:
+      - softwareupdate
+      - --download
+
+- name: Warn if a restart is required for updates
+  block:
+    - name: Check if a restart is required after updates
+      become: true
+      ansible.builtin.command:
+        argv:
+          - softwareupdate
+          - --list
+      register: restart_required
+      changed_when: false
+
+    - name: Display warning if restart is required
+      ansible.builtin.debug:
+        msg: "[software_update] Restart required for node {{ inventory_hostname }}"
+      when: "'restart' in restart_required.stdout | lower"
+
+- name: Install Command Line Tools for Xcode
+  become: true
+  ansible.builtin.shell: |
+    label=$(softwareupdate -l 2>/dev/null | awk -F': ' '/\* Label: Command Line Tools/{print $2; exit}')
+    if [ -n "$label" ]; then
+      softwareupdate --install "$label"
+    fi
+  register: clt_install
+  changed_when: "'downloaded' in clt_install.stdout | lower"
