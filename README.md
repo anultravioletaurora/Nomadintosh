@@ -46,6 +46,7 @@ Hosts are organised into named groups; the group name becomes the Consul/Nomad [
 | `docker` | `true` / _(absent)_ | Installs and configures Docker Desktop |
 | `gh_actions` | `true` / _(absent)_ | Deploys a GitHub Actions runner Nomad job |
 | `minecraft` | `true` / _(absent)_ | Deploys a Minecraft server Nomad job |
+| `volumes` | list of `{name, path}` | Configures [Nomad host volumes](https://developer.hashicorp.com/nomad/docs/configuration/client#host_volume) on the client |
 
 ## Running the playbook
 
@@ -77,7 +78,7 @@ ansible-playbook -i inventory/hosts.yml playbooks/nomadintosh.yml --limit <hostn
 
 For every host, the playbook performs the following steps:
 
-1. **Facts** — asserts the host is running macOS and gathers additional inventory-derived facts (datacenter, `retry_join` peer list).
+1. **Facts** — asserts the host is running macOS and sets the `datacenter` fact derived from the host's inventory group name.
 2. **Software Update** — downloads all pending macOS system updates via `softwareupdate`, installs any available Command Line Tools for Xcode, and warns if a restart is required.
 3. **Homebrew** — Installs Homebrew, taps `hashicorp/tap` and installs any packages listed in `additional_homebrew_packages`.
 4. **Docker Desktop** _(hosts with `docker: true`)_ — installs and configures Docker Desktop.
@@ -89,3 +90,9 @@ For every host, the playbook performs the following steps:
    - **Minecraft server** _(hosts with `minecraft: true`)_ — templates and deploys a Nomad job for a Minecraft server.
 
 Services are managed as macOS LaunchAgents (Nomad, Consul, and optionally the Podman machine).
+
+## Special Thanks
+
+- **[Jeff Geerling](https://www.jeffgeerling.com/)** — for his extensive work on [Ansible for DevOps](https://www.ansiblefordevops.com/), his [open-source Ansible roles](https://github.com/geerlingguy), and his deep-dive coverage of [Apple Silicon in homelabs](https://www.youtube.com/@JeffGeerling) that helped inspire this project.
+- **[HashiCorp](https://www.hashicorp.com/)** — for building [Nomad](https://developer.hashicorp.com/nomad/docs) and [Consul](https://developer.hashicorp.com/consul/docs), making native macOS workload orchestration possible.
+- **[nomad-driver-podman contributors](https://github.com/hashicorp/nomad-driver-podman)** — for the Podman task driver plugin that enables rootless container workloads on Nomad.

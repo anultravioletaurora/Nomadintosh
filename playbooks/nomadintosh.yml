@@ -22,7 +22,7 @@
       vars:
         homebrew_taps:
           - name: hashicorp/tap
-        homebrew_install_packages: additional_homebrew_packages
+        homebrew_install_packages: "{{ additional_homebrew_packages | default([]) }}"
 
     - name: Include Docker Desktop role
       ansible.builtin.include_role:
