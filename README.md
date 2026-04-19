@@ -14,32 +14,7 @@ An Ansible playbook for installing and configuring Nomad + Consul on a macOS clu
 
 ## Inventory
 
-Copy the structure below to `inventory/hosts.yml` and fill in your own hostnames and credentials. Hosts are organised into named groups; the group name becomes the Consul/Nomad **datacenter** for every host in that group.
-
-```yaml
-# Nomad/Consul server nodes (control plane)
-<datacenter-name>:
-  vars:
-    ansible_user: <ssh-user>
-    ansible_ssh_private_key_file: ~/.ssh/id_rsa
-    # ansible_password / ansible_become_password if needed
-  hosts:
-    <server1.example.com>:
-      server: true
-    <server2.example.com>:
-      server: true
-    <server3.example.com>:
-      server: true
-
-# Nomad/Consul client nodes (workload runners)
-<datacenter-name>:
-  vars:
-    ansible_user: <ssh-user>
-    ansible_ssh_private_key_file: ~/.ssh/id_rsa
-  hosts:
-    <client1.example.com>:
-      podman: true   # set to enable the Podman task driver
-```
+Hosts are organised into named groups; the group name becomes the Consul/Nomad **datacenter** for every host in that group. See [inventory/README.md](inventory/README.md) for full instructions on how to populate `inventory/hosts.yml`.
 
 **Host variables:**
 
@@ -47,36 +22,40 @@ Copy the structure below to `inventory/hosts.yml` and fill in your own hostnames
 |---|---|---|
 | `server` | `true` / _(absent)_ | Configures the host as a Nomad/Consul server |
 | `podman` | `true` / _(absent)_ | Installs and configures the Podman task driver |
+| `docker` | `true` / _(absent)_ | Installs and configures Docker Desktop |
+| `gh_actions` | `true` / _(absent)_ | Deploys a GitHub Actions runner Nomad job |
+| `minecraft` | `true` / _(absent)_ | Deploys a Minecraft server Nomad job |
 
 ## Running the playbook
 
 ```bash
-ansible-playbook playbooks/nomad.yml -i inventory/hosts.yml
+ansible-playbook playbooks/nomadintosh.yml -i inventory/hosts.yml
 ```
 
 Pass `--diff` to preview config file changes before they are applied:
 
 ```bash
-ansible-playbook playbooks/nomad.yml -i inventory/hosts.yml --diff
+ansible-playbook playbooks/nomadintosh.yml -i inventory/hosts.yml --diff
 ```
 
 Limit execution to a single host or group:
 
 ```bash
-ansible-playbook playbooks/nomad.yml -i inventory/hosts.yml --limit <hostname>
+ansible-playbook playbooks/nomadintosh.yml -i inventory/hosts.yml --limit <hostname>
 ```
 
 ## What it does
 
-For every host, the `nomad` role performs the following steps:
+For every host, the playbook performs the following steps:
 
-1. **Directories** — creates config and data directories for both Nomad (`/etc/nomad.d`, `/opt/nomad`) and Consul (`/etc/consul.d`, `/opt/consul`).
-2. **Install** — taps `hashicorp/tap` via Homebrew and installs/upgrades `nomad` and `consul`.
-3. **Configuration** — templates out `server.hcl` for both Nomad and Consul, with datacenter, node name, server/client mode, and `retry_join` derived automatically from inventory.
-4. **Drivers** — on hosts with `podman: true`, downloads the [`nomad-driver-podman`](https://github.com/hashicorp/nomad-driver-podman) source, compiles it with Go, and installs the binary into `/opt/nomad/plugins`.
+1. **Facts** — asserts the host is running macOS and gathers additional inventory-derived facts (datacenter, `retry_join` peer list).
+2. **Homebrew** — Installs Homebrew, taps `hashicorp/tap` and installs any packages listed in `additional_homebrew_packages`.
+3. **Docker Desktop** _(hosts with `docker: true`)_ — installs and configures Docker Desktop.
+4. **Podman** _(hosts with `podman: true`)_ — installs Podman, initialises the machine, and installs the [`nomad-driver-podman`](https://developer.hashicorp.com/nomad/plugins/drivers/podman) plugin.
+5. **Consul** — creates config/data directories, installs Consul via Homebrew, templates `server.hcl` with datacenter, node name, server/client mode, and `retry_join` derived from inventory, and registers a LaunchAgent.
+6. **Nomad** — creates config/data directories, installs Nomad via Homebrew, templates `server.hcl`, and registers a LaunchAgent.
+7. **Nomad Jobs**:
+   - **GitHub Actions runner** _(hosts with `gh_actions: true`)_ — templates and deploys a Nomad job for a self-hosted Actions runner.
+   - **Minecraft server** _(hosts with `minecraft: true`)_ — templates and deploys a Nomad job for a Minecraft server.
 
 Services are managed as macOS LaunchAgents (Nomad, Consul, and optionally the Podman machine).
-
-## Roadmap
-
-- [ ] Templating / configuration deployment (`templating.yml` is currently a stub)
