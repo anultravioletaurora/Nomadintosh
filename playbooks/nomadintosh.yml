@@ -1,5 +1,5 @@
-- name: Apply Nomad role to cosmonautical hosts
-  hosts: jellify
+- name: Perform Nomadintosh deployment
+  hosts: all
   # Need to fetch IPv4 addresses for Consul's configuration
   gather_facts: true 
   tasks:
