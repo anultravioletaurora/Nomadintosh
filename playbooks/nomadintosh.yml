@@ -44,7 +44,6 @@
 
     - name: Deploy Nomad Jobs
       block:
-
         - name: Include GH Actions Role
           ansible.builtin.include_role:
             name: github_actions
@@ -54,3 +53,12 @@
           ansible.builtin.include_role:
             name: minecraft
           when: minecraft | default(false)
+
+        - name: Include Seerr Role
+          ansible.builtin.include_role:
+            name: seerr
+          when: seerr | default(false)
+      rescue:
+        - name: Log Nomad Job Deployment Failure
+          ansible.builtin.debug:
+            msg: "Failed to deploy one or more Nomad jobs. Please check the previous tasks for details."

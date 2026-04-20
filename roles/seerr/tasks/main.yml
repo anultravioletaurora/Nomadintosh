@@ -1,0 +1,49 @@
+- name: Install pre-requisite packages for Seerr
+  ansible.builtin.homebrew:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - node
+    - pnpm
+
+- name: Create Seerr Working Directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ seerr_working_dir }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: staff
+
+- name: Fetch and unarchive Seerr Release
+  ansible.builtin.unarchive:
+    src: "https://github.com/seerr-team/seerr/archive/refs/tags/v{{ seerr_version }}.zip"
+    dest: "{{ seerr_working_dir }}"
+    remote_src: true
+
+- name: Install Seerr dependencies
+  ansible.builtin.command:
+    cmd: "{{ homebrew_dir }}/bin/pnpm install --frozen-lockfile"
+    chdir: "{{ seerr_version_dir }}"
+    creates: "{{ seerr_version_dir }}/node_modules"
+
+- name: Build Seerr
+  ansible.builtin.command:
+    cmd: "{{ homebrew_dir }}/bin/pnpm run build"
+    chdir: "{{ seerr_version_dir }}"
+    creates: "{{ seerr_version_dir }}/dist"
+
+- name: Create Nomad job file for Seerr
+  ansible.builtin.template:
+    src: seerr.nomad.hcl.j2
+    dest: "{{ nomad_jobs_dir }}/seerr.nomad.hcl"
+    owner: "{{ ansible_user }}"
+    group: staff
+    mode: '0644'
+
+- name: Deploy Seerr Nomad job
+  ansible.builtin.command:
+    argv:
+      - "{{ homebrew_dir }}/bin/nomad"
+      - job
+      - run
+      - "{{ nomad_jobs_dir }}/seerr.nomad.hcl"

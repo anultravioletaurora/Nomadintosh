@@ -1,0 +1,7 @@
+seerr_version: 3.2.0
+
+seerr_working_dir: "{{ working_dir }}/seerr"
+
+seerr_version_dir: "{{ seerr_working_dir }}/seerr-{{ seerr_version }}"
+
+seerr_port: 5055

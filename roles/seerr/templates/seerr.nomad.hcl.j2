@@ -1,0 +1,44 @@
+job "seerr" {
+    datacenters = ["{{ datacenter }}"]
+    type        = "service"
+
+    group "seerr" {
+        count = 1
+
+        network {
+            port "http" {
+                static = {{ seerr_port }}
+            }
+        }
+        task "seerr" {
+            driver = "raw_exec" # Using raw_exec as requested
+            config {
+                command = "{{ homebrew_dir }}/bin/pnpm"
+                args     = [
+                    "run",
+                    "start"
+                ]
+                work_dir = "{{ seerr_version_dir }}"
+            }
+
+            resources {
+                cpu    = 1
+                memory = 256
+            }
+
+            service {
+                name = "http"
+                port = "http" 
+            }
+        }
+    }
+
+    ui {
+        description = "Seerr is a web-based media request management system."
+
+        link {
+            label = "GitHub Repository"
+            url  = "https://github.com/seerr-team/seerr"
+        }
+    }
+}
