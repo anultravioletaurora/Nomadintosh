@@ -85,11 +85,14 @@ For every host, the playbook performs the following steps:
 5. **Podman** _(hosts with `podman: true`)_ — installs Podman, initialises the machine, and installs the [`nomad-driver-podman`](https://developer.hashicorp.com/nomad/plugins/drivers/podman) plugin.
 6. **Consul** — creates config/data directories, installs Consul via Homebrew, templates [`server.hcl`](https://developer.hashicorp.com/consul/docs/reference/agent/configuration-file) with datacenter, node name, server/client mode, and [`retry_join`](https://developer.hashicorp.com/consul/docs/reference/agent/configuration-file/general#retry_join) derived from inventory, and registers a LaunchAgent.
 7. **Nomad** — creates config/data directories, installs Nomad via Homebrew, templates [`server.hcl`](https://developer.hashicorp.com/nomad/docs/configuration) (including [`bootstrap_expect`](https://developer.hashicorp.com/nomad/docs/configuration/server#bootstrap_expect) and [`retry_join`](https://developer.hashicorp.com/nomad/docs/configuration/server_join)), and registers a LaunchAgent.
-8. **Nomad Jobs**:
-   - **GitHub Actions runner** _(hosts with `gh_actions: true`)_ — templates and deploys a Nomad job for a self-hosted Actions runner.
-   - **Minecraft server** _(hosts with `minecraft: true`)_ — templates and deploys a Nomad job for a Minecraft server.
+8. **Nomad Jobs** — each optional job follows the same two-step process: the playbook renders a Jinja2 HCL template into a `.nomad.hcl` file under `{{ nomad_jobs_dir }}` (`/opt/nomad/jobs`), then submits it to the local Nomad agent via `nomad job run`. Jobs run as long-lived `service`-type allocations using the `raw_exec` driver, executing native binaries directly on the host. See [JOBS.md](JOBS.md) for a full reference of every supported job, including resource allocations, ports, and configuration variables.
 
 Services are managed as macOS LaunchAgents (Nomad, Consul, and optionally the Podman machine).
+
+## Remarks
+
+- **Platform** — This playbook is tested against Apple Silicon running macOS 26 Tahoe. Mileage on x86 Macs or other macOS versions may vary.
+- **Bare-metal preference** — Where possible, workloads are deployed as native bare-metal jobs rather than containers. This is a deliberate choice to optimise performance on macOS — specifically to avoid the memory overhead of the Linux VM that Docker Desktop and Podman require on macOS, and to take advantage of native hardware acceleration (Metal, VideoToolbox, Core ML) which is unavailable or requires passthrough configuration inside a container runtime.
 
 ## Special Thanks
 
