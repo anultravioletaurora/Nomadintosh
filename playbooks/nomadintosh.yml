@@ -24,6 +24,11 @@
           - name: hashicorp/tap
         homebrew_install_packages: "{{ additional_homebrew_packages | default([]) }}"
 
+    - name: Include Container role
+      ansible.builtin.include_role:
+        name: container
+      when: container | default(false)
+
     - name: Include Docker Desktop role
       ansible.builtin.include_role:
         name: docker_desktop
@@ -54,3 +59,8 @@
           ansible.builtin.include_role:
             name: minecraft
           when: minecraft | default(false)
+
+        - name: Include Zitadel Role
+          ansible.builtin.include_role:
+            name: zitadel
+          when: zitadel | default(false)

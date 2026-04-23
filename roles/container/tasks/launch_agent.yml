@@ -1,0 +1,15 @@
+- name: Apply Launch Agent for Apple Container
+  ansible.builtin.template:
+    src: com.apple.container.plist.j2
+    dest: "/Users/{{ ansible_user }}/Library/LaunchAgents/com.apple.container.plist"
+    mode: '0644'
+    owner: "{{ ansible_user }}"
+    group: staff
+
+- name: Load Apple Container Launch Agent
+  ansible.builtin.command:
+    argv:
+      - launchctl
+      - bootstrap
+      - gui/{{ ansible_user_id }}
+      - /Users/{{ ansible_user }}/Library/LaunchAgents/com.apple.container.plist

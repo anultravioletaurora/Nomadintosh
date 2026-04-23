@@ -80,7 +80,7 @@ For every host, the playbook performs the following steps:
 
 1. **Facts** — asserts the host is running macOS and sets the `datacenter` fact derived from the host's inventory group name.
 2. **Software Update** — downloads all pending macOS system updates via `softwareupdate`, installs any available Command Line Tools for Xcode, and warns if a restart is required.
-3. **Homebrew** — Installs Homebrew, taps `hashicorp/tap` and installs any packages listed in `additional_homebrew_packages`.
+3. **Homebrew** — [Homebrew](https://brew.sh/) is the package manager of choice for this project. The playbook installs Homebrew if not present, taps `hashicorp/tap`, and installs any packages listed in `additional_homebrew_packages`. All system packages — including Consul, Nomad, Podman, and the Apple Container CLI — are managed exclusively through Homebrew.
 4. **Docker Desktop** _(hosts with `docker: true`)_ — installs and configures Docker Desktop.
 5. **Podman** _(hosts with `podman: true`)_ — installs Podman, initialises the machine, and installs the [`nomad-driver-podman`](https://developer.hashicorp.com/nomad/plugins/drivers/podman) plugin.
 6. **Consul** — creates config/data directories, installs Consul via Homebrew, templates [`server.hcl`](https://developer.hashicorp.com/consul/docs/reference/agent/configuration-file) with datacenter, node name, server/client mode, and [`retry_join`](https://developer.hashicorp.com/consul/docs/reference/agent/configuration-file/general#retry_join) derived from inventory, and registers a LaunchAgent.
@@ -98,4 +98,5 @@ Services are managed as macOS LaunchAgents (Nomad, Consul, and optionally the Po
 
 - **[Jeff Geerling](https://www.jeffgeerling.com/)** — for his extensive work on [Ansible for DevOps](https://www.ansiblefordevops.com/), his [open-source Ansible roles](https://github.com/geerlingguy), and his deep-dive coverage of [Apple Silicon in homelabs](https://www.youtube.com/@JeffGeerling) that helped inspire this project.
 - **[HashiCorp](https://www.hashicorp.com/)** — for building [Nomad](https://developer.hashicorp.com/nomad/docs) and [Consul](https://developer.hashicorp.com/consul/docs), making native macOS workload orchestration possible.
+- **[Homebrew contributors](https://github.com/Homebrew/brew/graphs/contributors)** — for maintaining the package manager that makes the entire software stack on this project possible. Every binary this playbook installs — from Nomad and Consul to Podman and the Apple Container CLI — is delivered and kept up to date through Homebrew.
 - **[nomad-driver-podman contributors](https://github.com/hashicorp/nomad-driver-podman)** — for the Podman task driver plugin that enables rootless container workloads on Nomad.
