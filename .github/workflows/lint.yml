@@ -7,6 +7,18 @@ on:
     branches: [main]
 
 jobs:
+  yamllint:
+    name: yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run yamllint
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          config_file: .yamllint.yml
+
   ansible-lint:
     name: ansible-lint
     runs-on: ubuntu-latest
@@ -27,3 +39,6 @@ jobs:
 
       - name: Run ansible-lint
         run: ansible-lint
+
+      - name: Syntax check
+        run: ansible-playbook playbooks/nomadintosh.yml -i inventory/hosts.example.yml --syntax-check
