@@ -4,8 +4,9 @@
       - "{{ homebrew_dir }}/bin/podman"
       - machine
       - init
+      - "{{ podman_machine_name }}"
   args:
-    creates: /Users/{{ ansible_user }}/.config/containers/podman/machine/applehv/podman-machine-default.ign
+    creates: /Users/{{ ansible_user }}/.config/containers/podman/machine/applehv/{{ podman_machine_name }}.ign
 
 - name: Start Podman Machine
   ansible.builtin.command:
@@ -13,5 +14,22 @@
       - "{{ homebrew_dir }}/bin/podman"
       - machine
       - start
-  register: podman_machine_start
-  changed_when: "'Started' in podman_machine_start.stdout"
+      - "{{ podman_machine_name }}"
+  async: 120
+  poll: 0
+  changed_when: true
+
+- name: Wait for Podman Machine to be running
+  ansible.builtin.command:
+    argv:
+      - "{{ homebrew_dir }}/bin/podman"
+      - machine
+      - inspect
+      - --format
+      - "{{ '{{.State}}' }}"
+      - "{{ podman_machine_name }}"
+  register: podman_machine_state
+  until: podman_machine_state.stdout | trim == "running"
+  retries: 24
+  delay: 5
+  changed_when: false
