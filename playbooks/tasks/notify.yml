@@ -27,4 +27,6 @@
   loop: "{{ notifications | default([]) }}"
   loop_control:
     loop_var: notification
-  when: notification.type == 'discord'
+  when:
+    - not ansible_check_mode
+    - notification.type == 'discord'
