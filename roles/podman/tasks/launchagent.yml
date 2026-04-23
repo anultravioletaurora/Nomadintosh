@@ -11,5 +11,5 @@
     argv:
       - launchctl
       - bootstrap
-      - gui/{{ ansible_user_id }}
+      - gui/{{ ansible_user_uid }}
       - /Users/{{ ansible_user }}/Library/LaunchAgents/com.podman.machine.default.plist

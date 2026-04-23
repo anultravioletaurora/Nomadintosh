@@ -5,8 +5,12 @@
 - name: Install / Upgrade Nomad
   ansible.builtin.import_tasks: install.yml
 
-- name: Download task drivers and plugins
-  ansible.builtin.import_tasks: drivers.yml
+- name: Download Container driver plugin
+  ansible.builtin.import_tasks: container_driver.yml
+  when: container | default(false)
+
+- name: Download Podman driver plugin
+  ansible.builtin.import_tasks: podman_driver.yml
   when: podman | default(false)
 
 - name: Apply Nomad configuration templates

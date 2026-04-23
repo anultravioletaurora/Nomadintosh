@@ -1,0 +1,28 @@
+- name: Create tmp directory for Container driver plugin
+  ansible.builtin.file:
+    path: "/tmp/{{ nomad_container_driver_name }}"
+    state: directory
+
+- name: Create plugins directory for Nomad
+  ansible.builtin.file:
+    path: "/opt/nomad/plugins"
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user }}"
+    group: "staff"
+
+- name: Unarchive Container driver plugin
+  ansible.builtin.unarchive:
+    src: "https://github.com/anultravioletaurora/nomad-driver-container/releases/download/v{{ nomad_container_driver_version }}/nomad-driver-container-darwin-arm64.tar.gz"
+    dest: "/tmp/{{ nomad_container_driver_name }}"
+    remote_src: yes
+    
+
+- name: Move Container driver plugin to Nomad plugins directory
+  ansible.builtin.copy:
+    src: "/tmp/{{ nomad_container_driver_name }}/nomad-driver-container"
+    dest: "/opt/nomad/plugins/{{ nomad_container_driver_name }}"
+    remote_src: true
+    mode: '0755'
+    owner: "{{ ansible_user }}"
+    group: "staff"
