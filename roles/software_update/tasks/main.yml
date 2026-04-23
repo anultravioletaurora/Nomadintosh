@@ -21,6 +21,12 @@
         msg: "[software_update] Restart required for node {{ inventory_hostname }}"
       when: "'restart' in software_update_restart_required.stdout | lower"
 
+    - name: Invoke Notify playbook if restart is required
+      ansible.builtin.import_tasks: tasks/notify.yml
+      vars:
+        webhook_message: "Restart required for node {{ inventory_hostname }} after software updates."
+      when: "'restart' in software_update_restart_required.stdout | lower"
+
 - name: Install Command Line Tools for Xcode
   become: true
   ansible.builtin.shell: |

@@ -42,6 +42,7 @@ Hosts are organised into named groups; the group name becomes the Consul/Nomad [
 | Variable | Values | Purpose |
 |---|---|---|
 | `server` | `true` / _(absent)_ | Configures the host as a Nomad/Consul server |
+| `container` | `true` / _(absent)_ | Installs Apple's [Container](https://github.com/apple/container) CLI and registers a LaunchAgent |
 | `podman` | `true` / _(absent)_ | Installs and configures the Podman task driver |
 | `docker` | `true` / _(absent)_ | Installs and configures Docker Desktop |
 | `gh_actions` | `true` / _(absent)_ | Deploys a GitHub Actions runner Nomad job |
@@ -81,18 +82,33 @@ For every host, the playbook performs the following steps:
 1. **Facts** — asserts the host is running macOS and sets the `datacenter` fact derived from the host's inventory group name.
 2. **Software Update** — downloads all pending macOS system updates via `softwareupdate`, installs any available Command Line Tools for Xcode, and warns if a restart is required.
 3. **Homebrew** — [Homebrew](https://brew.sh/) is the package manager of choice for this project. The playbook installs Homebrew if not present, taps `hashicorp/tap`, and installs any packages listed in `additional_homebrew_packages`. All system packages — including Consul, Nomad, Podman, and the Apple Container CLI — are managed exclusively through Homebrew.
-4. **Docker Desktop** _(hosts with `docker: true`)_ — installs and configures Docker Desktop.
-5. **Podman** _(hosts with `podman: true`)_ — installs Podman, initialises the machine, and installs the [`nomad-driver-podman`](https://developer.hashicorp.com/nomad/plugins/drivers/podman) plugin.
-6. **Consul** — creates config/data directories, installs Consul via Homebrew, templates [`server.hcl`](https://developer.hashicorp.com/consul/docs/reference/agent/configuration-file) with datacenter, node name, server/client mode, and [`retry_join`](https://developer.hashicorp.com/consul/docs/reference/agent/configuration-file/general#retry_join) derived from inventory, and registers a LaunchAgent.
-7. **Nomad** — creates config/data directories, installs Nomad via Homebrew, templates [`server.hcl`](https://developer.hashicorp.com/nomad/docs/configuration) (including [`bootstrap_expect`](https://developer.hashicorp.com/nomad/docs/configuration/server#bootstrap_expect) and [`retry_join`](https://developer.hashicorp.com/nomad/docs/configuration/server_join)), and registers a LaunchAgent.
-8. **Nomad Jobs** — each optional job follows the same two-step process: the playbook renders a Jinja2 HCL template into a `.nomad.hcl` file under `{{ nomad_jobs_dir }}` (`/opt/nomad/jobs`), then submits it to the local Nomad agent via `nomad job run`. Jobs run as long-lived `service`-type allocations using the `raw_exec` driver, executing native binaries directly on the host. See [JOBS.md](JOBS.md) for a full reference of every supported job, including resource allocations, ports, and configuration variables.
+4. **Apple Container** _(hosts with `container: true`)_ — installs Apple's [Container](https://github.com/apple/container) CLI via Homebrew and registers a LaunchAgent that starts the container system at login. On the Nomad side, the playbook downloads and installs [`nomad-driver-container`](https://github.com/anultravioletaurora/nomad-driver-container) — a custom Nomad task driver that integrates Nomad's scheduling with Apple's Container runtime. This allows Nomad jobs to run OCI containers natively on macOS using Apple's Virtualization.framework, without Docker Desktop or a Podman VM. The driver is configured in `nomad.d/server.hcl` with garbage collection enabled and log collection active.
+5. **Docker Desktop** _(hosts with `docker: true`)_ — installs and configures Docker Desktop.
+6. **Podman** _(hosts with `podman: true`)_ — installs Podman, initialises the machine, and installs the [`nomad-driver-podman`](https://developer.hashicorp.com/nomad/plugins/drivers/podman) plugin.
+7. **Consul** — creates config/data directories, installs Consul via Homebrew, templates [`server.hcl`](https://developer.hashicorp.com/consul/docs/reference/agent/configuration-file) with datacenter, node name, server/client mode, and [`retry_join`](https://developer.hashicorp.com/consul/docs/reference/agent/configuration-file/general#retry_join) derived from inventory, and registers a LaunchAgent.
+8. **Nomad** — creates config/data directories, installs Nomad via Homebrew, templates [`server.hcl`](https://developer.hashicorp.com/nomad/docs/configuration) (including [`bootstrap_expect`](https://developer.hashicorp.com/nomad/docs/configuration/server#bootstrap_expect) and [`retry_join`](https://developer.hashicorp.com/nomad/docs/configuration/server_join)), configures any enabled task driver plugins (`nomad-driver-container`, `nomad-driver-podman`), and registers a LaunchAgent.
+9. **Nomad Jobs** — each optional job follows the same two-step process: the playbook renders a Jinja2 HCL template into a `.nomad.hcl` file under `{{ nomad_jobs_dir }}` (`/opt/nomad/jobs`), then submits it to the local Nomad agent via `nomad job run`. Jobs run as long-lived `service`-type allocations using the `raw_exec` driver, executing native binaries directly on the host. See [JOBS.md](JOBS.md) for a full reference of every supported job, including resource allocations, ports, and configuration variables.
 
-Services are managed as macOS LaunchAgents (Nomad, Consul, and optionally the Podman machine).
+Services are managed as macOS LaunchAgents (Nomad, Consul, and optionally the Podman machine and Apple Container system).
+
+## Notifications
+
+A reusable webhook task file is available at [`playbooks/tasks/notify.yml`](playbooks/tasks/notify.yml). Import it anywhere in a playbook to POST a notification on completion:
+
+```yaml
+- name: Send completion notification
+  ansible.builtin.import_tasks: tasks/notify.yml
+  vars:
+    webhook_message: "nomadintosh deployment completed"
+```
+
+Store `notify_webhook_url` in Ansible Vault. The default body format is Discord-compatible (`content` + `username`); override with `webhook_body` for other platforms.
 
 ## Remarks
 
 - **Platform** — This playbook is tested against Apple Silicon running macOS 26 Tahoe. Mileage on x86 Macs or other macOS versions may vary.
 - **Bare-metal preference** — Where possible, workloads are deployed as native bare-metal jobs rather than containers. This is a deliberate choice to optimise performance on macOS — specifically to avoid the memory overhead of the Linux VM that Docker Desktop and Podman require on macOS, and to take advantage of native hardware acceleration (Metal, VideoToolbox, Core ML) which is unavailable or requires passthrough configuration inside a container runtime.
+- **`nomad-driver-container` is experimental** — The [nomad-driver-container](https://github.com/anultravioletaurora/nomad-driver-container) plugin is an early-stage, lightly tested project. It may behave unexpectedly, and is not recommended for workloads where stability is critical.
 
 ## Special Thanks
 

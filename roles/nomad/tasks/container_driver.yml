@@ -11,12 +11,22 @@
     owner: "{{ ansible_user }}"
     group: "staff"
 
-- name: Unarchive Container driver plugin
-  ansible.builtin.unarchive:
-    src: "https://github.com/anultravioletaurora/nomad-driver-container/releases/download/v{{ nomad_container_driver_version }}/nomad-driver-container-darwin-arm64.tar.gz"
-    dest: "/tmp/{{ nomad_container_driver_name }}"
-    remote_src: yes
-    
+- name: Download Container driver plugin
+  ansible.builtin.get_url:
+    url: "https://github.com/anultravioletaurora/nomad-driver-container/releases/download/v{{ nomad_container_driver_version }}/nomad-driver-container-darwin-arm64.tar.gz"
+    dest: "/tmp/{{ nomad_container_driver_name }}/nomad-driver-container-darwin-arm64.tar.gz"
+    mode: '0644'
+
+- name: Extract Container driver plugin
+  ansible.builtin.command:
+    argv:
+      - /usr/bin/tar
+      - xzf
+      - "/tmp/{{ nomad_container_driver_name }}/nomad-driver-container-darwin-arm64.tar.gz"
+      - -C
+      - "/tmp/{{ nomad_container_driver_name }}"
+    creates: "/tmp/{{ nomad_container_driver_name }}/nomad-driver-container"
+
 
 - name: Move Container driver plugin to Nomad plugins directory
   ansible.builtin.copy:
