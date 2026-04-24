@@ -1,7 +1,8 @@
+---
 nomad_plugin_dir: "{{ nomad_working_dir }}/plugins"
 
 nomad_podman_driver_version: "0.6.4"
 nomad_podman_driver_name: "nomad-driver-podman"
 
-nomad_container_driver_version: "0.1.0-dev-f6cd4f4"
+nomad_container_driver_version: "0.1.1-dev-7ba1610"
 nomad_container_driver_name: "nomad-driver-container"
