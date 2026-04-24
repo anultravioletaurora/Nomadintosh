@@ -41,13 +41,29 @@ Hosts are organised into named groups; the group name becomes the Consul/Nomad [
 
 | Variable | Values | Purpose |
 |---|---|---|
-| `server` | `true` / _(absent)_ | Configures the host as a Nomad/Consul server |
-| `container` | `true` / _(absent)_ | Installs Apple's [Container](https://github.com/apple/container) CLI and registers a LaunchAgent |
-| `podman` | `true` / _(absent)_ | Installs and configures the Podman task driver |
-| `docker` | `true` / _(absent)_ | Installs and configures Docker Desktop |
-| `gh_actions` | `true` / _(absent)_ | Deploys a GitHub Actions runner Nomad job |
-| `minecraft` | `true` / _(absent)_ | Deploys a Minecraft server Nomad job |
+| `server.enabled` | `true` / _(absent)_ | Configures the host as a Nomad/Consul server |
+| `container.enabled` | `true` / _(absent)_ | Installs Apple's [Container](https://github.com/apple/container) CLI and registers a LaunchAgent |
+| `podman.enabled` | `true` / _(absent)_ | Installs and configures the Podman task driver |
+| `docker.enabled` | `true` / _(absent)_ | Installs and configures Docker Desktop |
+| `gh_actions.enabled` | `true` / _(absent)_ | Deploys a GitHub Actions runner Nomad job |
+| `minecraft.enabled` | `true` / _(absent)_ | Deploys a Minecraft server Nomad job |
 | `volumes` | list of `{name, path}` | Configures [Nomad host volumes](https://developer.hashicorp.com/nomad/docs/configuration/client#host_volume) on the client |
+
+Example host definition:
+
+```yaml
+galileo.jellify.app:
+  server:
+    enabled: true
+  container:
+    enabled: true
+  podman:
+    enabled: true
+  gh_actions:
+    enabled: true
+  minecraft:
+    enabled: true
+```
 
 ## Running the playbook
 
