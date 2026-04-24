@@ -7,15 +7,15 @@ job "minecraft" {
 
     network {      
       port "minecraft-java" {
-        static = 25565
+        static = {{ minecraft_server_port }}
       }
       
       port "rcon" {
-        static = 25575
+        static = {{ minecraft_rcon_port }}
       }
 
       port "minecraft-bedrock" {
-        static = 19132
+        static = {{ minecraft_bedrock_port }}
       }
     }
 
@@ -37,8 +37,8 @@ job "minecraft" {
       }
 
       resources {
-        cpu    = 6 # 6 Cores
-        memory = 6144 # 6GB Total
+        cpu    = {{ minecraft_server_cpu }}
+        memory = {{ minecraft_server_memory }}
       }
     }
   }
