@@ -3,7 +3,7 @@
 {# Collect all Nomad server hostnames from inventory #}
 {% set ns = namespace(servers=[]) %}
 {% for host in groups['all'] %}
-{%   if hostvars[host]['server'] | default(false) %}
+{%   if 'server' in hostvars[host] and hostvars[host]['server'] is mapping and hostvars[host]['server']['enabled'] | default(false) %}
 {%     set ns.servers = ns.servers + [host] %}
 {%   endif %}
 {% endfor %}
@@ -17,8 +17,8 @@ retry_join = ["{{ ns.servers | join('", "') }}"]
 
 # Control plane on this box
 server {
-  enabled = {{ server | default(false) | lower }}
-{% if server | default(false) %}
+  enabled = {{ server.enabled | default(false) | lower }}
+{% if server.enabled | default(false) %}
   bootstrap_expect = {{ ns.servers | length }}
 {% endif %}
 }
@@ -45,7 +45,7 @@ plugin "raw_exec" {
   config { enabled = true } 
 }
 
-{% if container | default(false) %}
+{% if container.enabled | default(false) %}
 plugin "nomad-driver-container" {
   config {
     container_path = "/opt/homebrew/bin/container"
@@ -60,7 +60,7 @@ plugin "nomad-driver-container" {
 {% endif %}
 
 
-{% if podman | default(false) %}
+{% if podman.enabled | default(false) %}
 plugin "nomad-driver-podman" {
   config {
     socket_path = "{{ podman_socket_path }}"
@@ -68,7 +68,7 @@ plugin "nomad-driver-podman" {
 }
 {% endif %}
 
-{% if docker | default(false) %}
+{% if docker.enabled | default(false) %}
 plugin "docker" {
   config {
     endpoint = "unix:///var/run/docker.sock"

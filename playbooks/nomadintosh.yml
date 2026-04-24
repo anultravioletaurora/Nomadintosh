@@ -27,17 +27,17 @@
     - name: Include Container role
       ansible.builtin.include_role:
         name: container
-      when: container | default(false)
+      when: container.enabled | default(false)
 
     - name: Include Docker Desktop role
       ansible.builtin.include_role:
         name: docker_desktop
-      when: docker | default(false)
+      when: docker.enabled | default(false)
 
     - name: Include Podman role
       ansible.builtin.include_role:
         name: podman
-      when: podman | default(false)
+      when: podman.enabled | default(false)
 
     - name: Include Consul role
       ansible.builtin.include_role:
@@ -53,14 +53,14 @@
         - name: Include GH Actions Role
           ansible.builtin.include_role:
             name: github_actions
-          when: gh_actions | default(false)
+          when: gh_actions.enabled | default(false)
 
         - name: Include Minecraft Server Role
           ansible.builtin.include_role:
             name: minecraft
-          when: minecraft | default(false)
+          when: minecraft.enabled | default(false)
 
         - name: Include Zitadel Role
           ansible.builtin.include_role:
             name: zitadel
-          when: zitadel | default(false)
+          when: zitadel.enabled | default(false)

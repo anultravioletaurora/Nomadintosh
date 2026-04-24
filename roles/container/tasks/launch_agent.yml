@@ -1,3 +1,4 @@
+---
 - name: Apply Launch Agent for Apple Container
   ansible.builtin.template:
     src: com.apple.container.plist.j2

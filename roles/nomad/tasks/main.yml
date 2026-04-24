@@ -7,11 +7,11 @@
 
 - name: Download Container driver plugin
   ansible.builtin.import_tasks: container_driver.yml
-  when: container | default(false)
+  when: container.enabled | default(false)
 
 - name: Download Podman driver plugin
   ansible.builtin.import_tasks: podman_driver.yml
-  when: podman | default(false)
+  when: podman.enabled | default(false)
 
 - name: Apply Nomad configuration templates
   become: true
