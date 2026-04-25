@@ -23,7 +23,7 @@
       when: "'restart' in software_update_restart_required.stdout | lower"
 
     - name: Invoke Notify playbook if restart is required
-      ansible.builtin.import_tasks: tasks/notify.yml
+      ansible.builtin.import_tasks: notify.yml
       vars:
         webhook_message: "Restart required for node {{ inventory_hostname }} after software updates."
       when: "'restart' in software_update_restart_required.stdout | lower"

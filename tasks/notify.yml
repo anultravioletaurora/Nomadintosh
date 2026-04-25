@@ -1,3 +1,4 @@
+---
 # Reusable webhook notification task file.
 #
 # Include anywhere in a playbook with import_tasks or include_tasks:
