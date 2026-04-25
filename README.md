@@ -69,25 +69,31 @@ galileo.jellify.app:
 
 Run a full deployment:
 
-```bash
+```zsh
 ./deploy.zsh
 ```
 
 Dry-run in check + diff mode to preview changes without applying them:
 
-```bash
+```zsh
 ./check.zsh
+```
+
+Deploy jobs
+
+```zsh
+./run-jobs.zsh
 ```
 
 Serial Reboot all hosts in the inventory:
 
-```bash
+```zsh
 ./reboot.zsh
 ```
 
 To limit execution to a single host or group, you can also pass `--limit` directly to the underlying playbook:
 
-```bash
+```zsh
 ansible-playbook -i inventory/hosts.yml playbooks/nomadintosh.yml --limit <hostname>
 ```
 

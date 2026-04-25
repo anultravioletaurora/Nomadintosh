@@ -49,19 +49,4 @@
         name: nomad
 
     - name: Deploy Nomad Jobs
-      block:
-
-        - name: Include GH Actions Role
-          ansible.builtin.include_role:
-            name: github_actions
-          when: gh_actions.enabled | default(false)
-
-        - name: Include Minecraft Server Role
-          ansible.builtin.include_role:
-            name: minecraft
-          when: minecraft.enabled | default(false)
-
-        - name: Include Zitadel Role
-          ansible.builtin.include_role:
-            name: zitadel
-          when: zitadel.enabled | default(false)
+      ansible.builtin.import_playbook: jobs.yml
