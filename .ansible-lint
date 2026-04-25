@@ -1,6 +1,9 @@
 ---
 profile: moderate
 
+exclude_paths:
+  - .github/
+
 skip_list:
   # state: latest is intentional — this tool is designed to keep homelab
   # nodes up to date on every run.
