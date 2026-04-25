@@ -1,3 +1,4 @@
+---
 - name: Ensure Nomad is installed from HashiCorp tap
   community.general.homebrew:
     name:
@@ -15,7 +16,7 @@
     msg: "Nomad was {{ 'installed' if nomad_package_install.changed else 'already up to date' }}."
 
 - name: Send Webhook notification if Nomad was installed or updated
-  ansible.builtin.import_tasks: tasks/notify.yml
+  ansible.builtin.import_tasks: notify.yml
   vars:
     webhook_message: "Nomad was {{ 'installed' if nomad_package_install.changed else 'already up to date' }} on node {{ inventory_hostname }}."
   when: nomad_package_install.changed

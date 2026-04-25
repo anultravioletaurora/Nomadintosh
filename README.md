@@ -109,11 +109,11 @@ Services are managed as macOS LaunchAgents (Nomad, Consul, and optionally the Po
 
 ## Notifications
 
-A reusable webhook task file is available at [`playbooks/tasks/notify.yml`](playbooks/tasks/notify.yml). Import it anywhere in a playbook to POST a notification on completion:
+A reusable webhook task file is available at [`tasks/notify.yml`](tasks/notify.yml). Import it anywhere in a playbook to POST a notification on completion:
 
 ```yaml
 - name: Send completion notification
-  ansible.builtin.import_tasks: tasks/notify.yml
+  ansible.builtin.import_tasks: notify.yml
   vars:
     webhook_message: "nomadintosh deployment completed"
 ```

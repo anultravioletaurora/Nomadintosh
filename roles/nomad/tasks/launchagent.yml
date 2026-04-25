@@ -1,3 +1,4 @@
+---
 - name: Create Launch Agent for Nomad
   ansible.builtin.template:
     src: LaunchAgents/homebrew.mxcl.nomad.plist.j2

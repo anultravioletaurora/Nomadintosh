@@ -1,3 +1,4 @@
+---
 - name: Create Launch Agent for Consul
   ansible.builtin.template:
     src: LaunchAgents/homebrew.mxcl.consul.plist.j2

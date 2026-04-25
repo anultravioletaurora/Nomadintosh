@@ -1,3 +1,4 @@
+---
 - name: Ensure Go is installed
   community.general.homebrew:
     name:

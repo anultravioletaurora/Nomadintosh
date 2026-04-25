@@ -1,3 +1,4 @@
+---
 - name: Create Directories for Consul
   become: true
   ansible.builtin.import_tasks: directories.yml

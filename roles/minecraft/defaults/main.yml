@@ -1,3 +1,4 @@
+---
 minecraft_job_name: "minecraft-server"
 
 minecraft_job_file_dest: "{{ nomad_jobs_dir }}/minecraft-server.nomad.hcl"

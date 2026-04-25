@@ -1,3 +1,4 @@
+---
 all:
   vars:
     # SSH connection settings — applied to every host

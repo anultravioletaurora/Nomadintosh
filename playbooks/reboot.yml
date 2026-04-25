@@ -1,3 +1,4 @@
+---
 - name: Reboot Node
   hosts: all
   serial: 1

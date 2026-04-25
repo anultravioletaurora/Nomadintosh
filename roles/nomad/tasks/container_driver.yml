@@ -1,3 +1,4 @@
+---
 - name: Create tmp directory for Container driver plugin
   ansible.builtin.file:
     path: "/tmp/{{ nomad_container_driver_name }}"
@@ -13,7 +14,7 @@
 
 - name: Download Container driver plugin
   ansible.builtin.get_url:
-    url: "https://github.com/anultravioletaurora/nomad-driver-container/releases/download/v{{ nomad_container_driver_version }}/nomad-driver-container-darwin-arm64.tar.gz"
+    url: "{{ nomad_container_driver_url }}"
     dest: "/tmp/{{ nomad_container_driver_name }}/nomad-driver-container-darwin-arm64.tar.gz"
     mode: '0644'
 

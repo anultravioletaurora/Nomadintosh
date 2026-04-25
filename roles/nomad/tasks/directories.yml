@@ -1,3 +1,4 @@
+---
 - name: Create Nomad Config Directory (as root)
   ansible.builtin.file:
     path: "{{ nomad_config_dir }}"
