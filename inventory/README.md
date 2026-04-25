@@ -10,7 +10,7 @@ The **group name** each host belongs to becomes its Consul/Nomad **datacenter**.
 
 ### Servers vs. clients
 
-Hosts with `server: true` form the Nomad/Consul control plane for their datacenter. All other hosts are enrolled as client nodes that schedule and run workloads. The `bootstrap_expect` value is set automatically based on how many `server: true` hosts exist in the inventory.
+Hosts with `server: { enabled: true }` form the Nomad/Consul control plane for their datacenter. All other hosts are enrolled as client nodes that schedule and run workloads. The `bootstrap_expect` value is set automatically based on how many `server: { enabled: true }` hosts exist in the inventory.
 
 ### `retry_join`
 
@@ -27,10 +27,13 @@ all:
 <datacenter-name>:
   hosts:
     <server1.example.com>:
-      server: true
+      server:
+        enabled: true
     <client1.example.com>:
-      podman: true
-      gh_actions: true
+      podman:
+        enabled: true
+      gh_actions:
+        enabled: true
 ```
 
 Variables defined directly under a hostname override any group-level `vars` for that host.
@@ -53,11 +56,12 @@ Variables defined directly under a hostname override any group-level `vars` for 
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `server` | `false` | Configures the host as a Nomad/Consul server node |
-| `podman` | `false` | Installs Podman and the [nomad-driver-podman](https://developer.hashicorp.com/nomad/plugins/drivers/podman) plugin |
-| `docker` | `false` | Installs Docker Desktop and enables the Nomad Docker driver |
-| `gh_actions` | `false` | Deploys a GitHub Actions self-hosted runner as a Nomad job |
-| `minecraft` | `false` | Deploys a Minecraft server as a Nomad job |
+| `server.enabled` | `false` | Configures the host as a Nomad/Consul server node |
+| `podman.enabled` | `false` | Installs Podman and the [nomad-driver-podman](https://developer.hashicorp.com/nomad/plugins/drivers/podman) plugin |
+| `docker.enabled` | `false` | Installs Docker Desktop and enables the Nomad Docker driver |
+| `gh_actions.enabled` | `false` | Deploys a GitHub Actions self-hosted runner as a Nomad job |
+| `minecraft.enabled` | `false` | Deploys a Minecraft server as a Nomad job |
+| `container.enabled` | `false` | Installs Apple's Container CLI and registers a LaunchAgent |
 | `volumes` | _(absent)_ | List of host volumes to expose to the Nomad client (see below) |
 
 #### `volumes` format
@@ -87,23 +91,34 @@ all:
 cosmonautical:
   hosts:
     cassiopeia.cosmonautical.cloud:
-      server: true
+      server:
+        enabled: true
     taurus.cosmonautical.cloud:
-      server: true
+      server:
+        enabled: true
     copernicus.cosmonautical.cloud:
-      server: true
-      docker: true
-      podman: true
+      server:
+        enabled: true
+      docker:
+        enabled: true
+      podman:
+        enabled: true
+      container:
+        enabled: true
       volumes:
         - name: config
           path: /Users/violet/.config
 
-jellify:
+
   hosts:
     galileo.jellify.app:
-      podman: true
-      gh_actions: true
-      minecraft: true
+      podman:
+        enabled: true
+      gh_actions:
+        enabled: true
+      minecraft:
+        enabled: true
+      container:
+        enabled: true
 ```
-
 In this example, `cosmonautical` and `jellify` are two separate datacenters. The three `cassiopeia`, `taurus`, and `copernicus` hosts form the `cosmonautical` control plane (`bootstrap_expect = 3`). `galileo` is a client-only node in the `jellify` datacenter running Nomad jobs via Podman.
