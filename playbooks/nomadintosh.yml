@@ -1,3 +1,4 @@
+---
 - name: Perform Nomadintosh deployment
   hosts: all
   # Need to fetch IPv4 addresses for Consul's configuration
