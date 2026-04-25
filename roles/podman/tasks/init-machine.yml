@@ -1,3 +1,4 @@
+---
 - name: Create Podman Machine
   ansible.builtin.command:
     argv:

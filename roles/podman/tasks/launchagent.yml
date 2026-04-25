@@ -1,3 +1,4 @@
+---
 - name: Apply Launch Agent for Podman
   ansible.builtin.template:
     src: LaunchAgents/com.podman.machine.default.plist.j2

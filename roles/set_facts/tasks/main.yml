@@ -1,3 +1,4 @@
+---
 - name: Set datacenter fact for Nomad
   ansible.builtin.set_fact:
     datacenter: "{{ group_names | reject('equalto', 'all') | reject('equalto', 'ungrouped') | first }}" # noqa: var-naming[no-role-prefix]

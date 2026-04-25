@@ -1,3 +1,4 @@
+---
 - name: Create Directories for Nomad
   become: true
   ansible.builtin.import_tasks: directories.yml

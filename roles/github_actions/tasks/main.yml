@@ -1,3 +1,4 @@
+---
 - name: Template and Deploy GitHub Actions Runner Nomad Job
   ansible.builtin.template:
     src: github-actions-runner.nomad.hcl.j2

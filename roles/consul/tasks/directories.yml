@@ -1,3 +1,4 @@
+---
 - name: Create Consul Config Directory (as root)
   ansible.builtin.file:
     path: "{{ consul_config_dir }}"
