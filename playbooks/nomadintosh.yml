@@ -48,5 +48,5 @@
       ansible.builtin.include_role:
         name: nomad
 
-    - name: Deploy Nomad Jobs
-      ansible.builtin.import_playbook: jobs.yml
+- name: Deploy Nomad Jobs
+  ansible.builtin.import_playbook: jobs.yml
