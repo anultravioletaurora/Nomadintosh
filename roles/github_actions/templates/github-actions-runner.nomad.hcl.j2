@@ -8,6 +8,14 @@ job "{{ github_actions_job_name }}" {
     task "actions-runner" {
       driver = "raw_exec"
 
+      {% if gh_actions.env is defined %}
+      env {
+        {% for key, value in gh_actions.env.items() %}
+        {{ key }} = "{{ value }}"
+        {% endfor %}
+      }
+      {% endif %}
+
       config {
         command = "{{ github_actions_executable }}"
       }

@@ -28,3 +28,17 @@ The GitHub Actions runner must be **downloaded and configured manually on the ho
 | `gh_actions_executable` | `/opt/github-actions/run.sh` | Path to the runner's `run.sh` script on the host |
 | `job_name` | `actions-runner` | Nomad job name |
 | `job_file_dest` | `{{ nomad_jobs_dir }}/actions-runner.nomad.hcl` | Where the rendered job file is written |
+
+### Environment variables
+
+If the runner process needs environment variables (e.g. variables that would normally be sourced from `/etc/profile` but are unavailable to non-login-shell processes), set them via `gh_actions.env` in the host's inventory entry:
+
+```yaml
+gh_actions:
+  enabled: true
+  env:
+    MY_VAR: "some-value"
+    ANOTHER_VAR: "another-value"
+```
+
+Each key/value pair is rendered into the Nomad job's `env {}` block and injected directly into the runner process at runtime. If `gh_actions.env` is absent the block is omitted entirely.

@@ -46,6 +46,7 @@ Hosts are organised into named groups; the group name becomes the Consul/Nomad [
 | `podman.enabled` | `true` / _(absent)_ | Installs and configures the Podman task driver |
 | `docker.enabled` | `true` / _(absent)_ | Installs and configures Docker Desktop |
 | `gh_actions.enabled` | `true` / _(absent)_ | Deploys a GitHub Actions runner Nomad job |
+| `gh_actions.env` | map / _(absent)_ | Environment variables injected into the runner process |
 | `minecraft.enabled` | `true` / _(absent)_ | Deploys a Minecraft server Nomad job |
 | `volumes` | list of `{name, path}` | Configures [Nomad host volumes](https://developer.hashicorp.com/nomad/docs/configuration/client#host_volume) on the client |
 

@@ -60,9 +60,24 @@ Variables defined directly under a hostname override any group-level `vars` for 
 | `podman.enabled` | `false` | Installs Podman and the [nomad-driver-podman](https://developer.hashicorp.com/nomad/plugins/drivers/podman) plugin |
 | `docker.enabled` | `false` | Installs Docker Desktop and enables the Nomad Docker driver |
 | `gh_actions.enabled` | `false` | Deploys a GitHub Actions self-hosted runner as a Nomad job |
+| `gh_actions.env` | _(absent)_ | Map of environment variables injected into the runner process (see below) |
 | `minecraft.enabled` | `false` | Deploys a Minecraft server as a Nomad job |
 | `container.enabled` | `false` | Installs Apple's Container CLI and registers a LaunchAgent |
 | `volumes` | _(absent)_ | List of host volumes to expose to the Nomad client (see below) |
+
+#### `gh_actions.env` format
+
+An optional map of key/value pairs passed as environment variables to the GitHub Actions runner process via the Nomad job's `env {}` block. Useful for variables that would normally be sourced from a login shell (e.g. `/etc/profile`) but are not visible to processes launched by Nomad:
+
+```yaml
+gh_actions:
+  enabled: true
+  env:
+    MY_VAR: "some-value"
+    ANOTHER_VAR: "another-value"
+```
+
+If `gh_actions.env` is absent, no `env {}` block is added to the job.
 
 #### `volumes` format
 
