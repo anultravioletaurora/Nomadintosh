@@ -132,6 +132,8 @@ Store `notify_webhook_url` in Ansible Vault. The default body format is Discord-
 - **Platform** — This playbook is tested against Apple Silicon running macOS 26 Tahoe. Mileage on x86 Macs or other macOS versions may vary.
 - **Bare-metal preference** — Where possible, workloads are deployed as native bare-metal jobs rather than containers. This is a deliberate choice to optimise performance on macOS — specifically to avoid the memory overhead of the Linux VM that Docker Desktop and Podman require on macOS, and to take advantage of native hardware acceleration (Metal, VideoToolbox, Core ML) which is unavailable or requires passthrough configuration inside a container runtime.
 - **`nomad-driver-container` is experimental** — The [nomad-driver-container](https://github.com/anultravioletaurora/nomad-driver-container) plugin is an early-stage, lightly tested project. It may behave unexpectedly, and is not recommended for workloads where stability is critical.
+- **Companion project** — [Nomaduntu](https://github.com/anultravioletaurora/Nomaduntu) is the Ubuntu counterpart to this playbook. Nomad's multi-platform support means both clusters can participate in the same datacenter if desired.
+
 
 ## Special Thanks
 
