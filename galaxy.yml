@@ -1,0 +1,20 @@
+---
+namespace: anultravioletaurora
+name: nomadintosh
+version: 1.0.0
+readme: README.md
+description: An Ansible collection for deploying Nomad + Consul on a macOS cluster.
+license:
+  - MIT
+tags:
+  - nomad
+  - consul
+  - macos
+  - homelab
+  - hashicorp
+repository: https://github.com/anultravioletaurora/Nomadintosh
+homepage: https://github.com/anultravioletaurora/Nomadintosh
+issues: https://github.com/anultravioletaurora/Nomadintosh/issues
+dependencies:
+  geerlingguy.mac: "*"
+  community.general: "*"
