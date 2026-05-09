@@ -21,17 +21,17 @@
     - name: Include Container role
       ansible.builtin.include_role:
         name: container
-      when: container.enabled and ansible_facts['os_family'] == 'Darwin' | default(false)
+      when: container.enabled | default(false) and ansible_facts['os_family'] == 'Darwin'
 
     - name: Include Docker Desktop role
       ansible.builtin.include_role:
         name: docker_desktop
-      when: docker.enabled and ansible_facts['os_family'] == 'Darwin' | default(false)
+      when: docker.enabled | default(false) and ansible_facts['os_family'] == 'Darwin'
 
     - name: Include Podman role
       ansible.builtin.include_role:
         name: podman
-      when: podman.enabled and ansible_facts['os_family'] == 'Darwin' | default(false)
+      when: podman.enabled | default(false) and ansible_facts['os_family'] == 'Darwin'
 
     - name: Include Consul role
       ansible.builtin.include_role:
