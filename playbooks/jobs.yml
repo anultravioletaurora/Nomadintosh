@@ -12,14 +12,14 @@
     - name: Include GH Actions Role
       ansible.builtin.include_role:
         name: github_actions
-      when: gh_actions.enabled and ansible_facts['os_family'] == 'Darwin' | default(false)
+      when: gh_actions.enabled | default(false) and ansible_facts['os_family'] == 'Darwin'
 
     - name: Include Minecraft Server Role
       ansible.builtin.include_role:
         name: minecraft
-      when: minecraft.enabled and ansible_facts['os_family'] == 'Darwin' | default(false)
+      when: minecraft.enabled | default(false) and ansible_facts['os_family'] == 'Darwin'
 
     - name: Include Zitadel Role
       ansible.builtin.include_role:
         name: zitadel
-      when: zitadel.enabled and ansible_facts['os_family'] == 'Darwin' | default(false)
+      when: zitadel.enabled | default(false) and ansible_facts['os_family'] == 'Darwin'
