@@ -3,15 +3,12 @@
   hosts: all
   # Need to fetch IPv4 addresses for Consul's configuration
   gather_facts: true
-  pre_tasks:
-    - name: Set additional facts
-      ansible.builtin.include_role:
-        name: set_facts
-
+  tasks:
     - name: Perform Software Update
       ansible.builtin.include_role:
         name: software_update
-  tasks:
+      when: ansible_facts['os_family'] == 'Darwin'
+
     - name: Install Homebrew
       ansible.builtin.include_role:
         name: geerlingguy.mac.homebrew
@@ -19,29 +16,32 @@
         homebrew_taps:
           - name: hashicorp/tap
         homebrew_install_packages: "{{ additional_homebrew_packages | default([]) }}"
+      when: ansible_facts['os_family'] == 'Darwin'
 
     - name: Include Container role
       ansible.builtin.include_role:
         name: container
-      when: container.enabled | default(false)
+      when: container.enabled and ansible_facts['os_family'] == 'Darwin' | default(false)
 
     - name: Include Docker Desktop role
       ansible.builtin.include_role:
         name: docker_desktop
-      when: docker.enabled | default(false)
+      when: docker.enabled and ansible_facts['os_family'] == 'Darwin' | default(false)
 
     - name: Include Podman role
       ansible.builtin.include_role:
         name: podman
-      when: podman.enabled | default(false)
+      when: podman.enabled and ansible_facts['os_family'] == 'Darwin' | default(false)
 
     - name: Include Consul role
       ansible.builtin.include_role:
         name: consul
+      when: ansible_facts['os_family'] == 'Darwin'
 
     - name: Include Nomad role
       ansible.builtin.include_role:
         name: nomad
+      when: ansible_facts['os_family'] == 'Darwin'
 
 - name: Deploy Nomad Jobs
   ansible.builtin.import_playbook: jobs.yml

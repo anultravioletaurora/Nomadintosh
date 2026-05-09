@@ -3,28 +3,23 @@
   hosts: all
   # Need to fetch IPv4 addresses for Consul's configuration
   gather_facts: true
-  pre_tasks:
-    - name: Ensure host is running macOS
-      ansible.builtin.assert:
-        that: ansible_facts['os_family'] == 'Darwin'
-        fail_msg: "This playbook is intended to run on macOS hosts only."
-
+  tasks:
     - name: Set additional facts
       ansible.builtin.include_role:
         name: set_facts
+      when: ansible_facts['os_family'] == 'Darwin'
 
-  tasks:
     - name: Include GH Actions Role
       ansible.builtin.include_role:
         name: github_actions
-      when: gh_actions.enabled | default(false)
+      when: gh_actions.enabled and ansible_facts['os_family'] == 'Darwin' | default(false)
 
     - name: Include Minecraft Server Role
       ansible.builtin.include_role:
         name: minecraft
-      when: minecraft.enabled | default(false)
+      when: minecraft.enabled and ansible_facts['os_family'] == 'Darwin' | default(false)
 
     - name: Include Zitadel Role
       ansible.builtin.include_role:
         name: zitadel
-      when: zitadel.enabled | default(false)
+      when: zitadel.enabled and ansible_facts['os_family'] == 'Darwin' | default(false)
