@@ -1,6 +1,0 @@
----
-github_actions_job_name: "actions-runner"
-
-github_actions_job_file_dest: "{{ nomad_jobs_dir }}/{{ github_actions_job_name }}.nomad.hcl"
-
-github_actions_executable: /opt/github-actions/run.sh

@@ -42,6 +42,3 @@
       ansible.builtin.include_role:
         name: nomad
       when: ansible_facts['os_family'] == 'Darwin'
-
-- name: Deploy Nomad Jobs
-  ansible.builtin.import_playbook: jobs.yml
