@@ -45,9 +45,6 @@ Hosts are organised into named groups; the group name becomes the Consul/Nomad [
 | `container.enabled` | `true` / _(absent)_ | Installs Apple's [Container](https://github.com/apple/container) CLI and registers a LaunchAgent |
 | `podman.enabled` | `true` / _(absent)_ | Installs and configures the Podman task driver |
 | `docker.enabled` | `true` / _(absent)_ | Installs and configures Docker Desktop |
-| `gh_actions.enabled` | `true` / _(absent)_ | Deploys a GitHub Actions runner Nomad job |
-| `gh_actions.env` | map / _(absent)_ | Environment variables injected into the runner process |
-| `minecraft.enabled` | `true` / _(absent)_ | Deploys a Minecraft server Nomad job |
 | `volumes` | list of `{name, path}` | Configures [Nomad host volumes](https://developer.hashicorp.com/nomad/docs/configuration/client#host_volume) on the client |
 
 Example host definition:
@@ -59,10 +56,6 @@ galileo.jellify.app:
   container:
     enabled: true
   podman:
-    enabled: true
-  gh_actions:
-    enabled: true
-  minecraft:
     enabled: true
 ```
 
@@ -110,7 +103,6 @@ For every host, the playbook performs the following steps:
 6. **Podman** _(hosts with `podman: true`)_ — installs Podman, initialises the machine, and installs the [`nomad-driver-podman`](https://developer.hashicorp.com/nomad/plugins/drivers/podman) plugin.
 7. **Consul** — creates config/data directories, installs Consul via Homebrew, templates [`server.hcl`](https://developer.hashicorp.com/consul/docs/reference/agent/configuration-file) with datacenter, node name, server/client mode, and [`retry_join`](https://developer.hashicorp.com/consul/docs/reference/agent/configuration-file/general#retry_join) derived from inventory, and registers a LaunchAgent.
 8. **Nomad** — creates config/data directories, installs Nomad via Homebrew, templates [`server.hcl`](https://developer.hashicorp.com/nomad/docs/configuration) (including [`bootstrap_expect`](https://developer.hashicorp.com/nomad/docs/configuration/server#bootstrap_expect) and [`retry_join`](https://developer.hashicorp.com/nomad/docs/configuration/server_join)), configures any enabled task driver plugins (`nomad-driver-container`, `nomad-driver-podman`), and registers a LaunchAgent.
-9. **Nomad Jobs** — each optional job follows the same two-step process: the playbook renders a Jinja2 HCL template into a `.nomad.hcl` file under `{{ nomad_jobs_dir }}` (`/opt/nomad/jobs`), then submits it to the local Nomad agent via `nomad job run`. Jobs run as long-lived `service`-type allocations using the `raw_exec` driver, executing native binaries directly on the host. See [JOBS.md](JOBS.md) for a full reference of every supported job, including resource allocations, ports, and configuration variables.
 
 Services are managed as macOS LaunchAgents (Nomad, Consul, and optionally the Podman machine and Apple Container system).
 
